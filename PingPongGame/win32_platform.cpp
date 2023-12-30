@@ -73,7 +73,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 
 		//Simulate
 		clear_screen(0xff5500);
-		draw_rect(50, 50, 200, 500, 0xff0000);
+		draw_rect(0, 0, 1, 1, 0xff0000);
 		//render_background();
 
 

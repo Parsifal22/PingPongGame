@@ -14,7 +14,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/bin/Release")
 file(GLOB SOURCES "PingPongGame/*.cpp" "PingPongGame/*.h")
 
 # Create the executable target
-add_executable(PingPongGame ${SOURCES} "PingPongGame/render.cpp" "PingPongGame/win32_platform.h")
+add_executable(PingPongGame ${SOURCES})
 
 # Set the subsystem to "windows" for GUI applications
 if(WIN32)

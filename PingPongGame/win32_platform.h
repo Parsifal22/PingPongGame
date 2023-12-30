@@ -1,6 +1,6 @@
-
 #include <windows.h>
 
+static float render_scale = 0.01f;
 
 struct Render_State
 {
@@ -14,8 +14,9 @@ extern Render_State render_state;
 
 extern bool running;  
 
+inline int clamp(int min, int val, int max);
 
-void render_background();
 void clear_screen(unsigned int color);
 
-void draw_rect(int x0, int y0, int x1, int y1, unsigned int color);
+void draw_rect_in_pixels(int x0, int y0, int x1, int y1, unsigned int color);
+void draw_rect(float x, float y, float half_size_x, float half_size_y, unsigned int color);
