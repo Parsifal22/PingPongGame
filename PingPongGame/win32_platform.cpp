@@ -1,8 +1,16 @@
-#include "win32_platform.h"
+#include "win32_platform.hpp"
 
 Render_State render_state; 
 
 bool running = true;  
+
+Input input = {};
+
+#define process_button(b, vk)\
+	case vk: {\
+		input.buttons[b].is_down = is_down;\
+		input.buttons[b].changed = true;\
+	} break;
 
 LRESULT CALLBACK CallBack(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -61,27 +69,64 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 	HWND window = CreateWindow(window_class.lpszClassName, "Ping Pong Game", WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 1280, 720, 0, 0, hInstance, 0);
 	HDC hdc = GetDC(window);
 
+	float delta_time = 0.016666f;
+	LARGE_INTEGER frame_begin_time;
+	QueryPerformanceCounter(&frame_begin_time);
+
+	float performance_frequency;
+	{
+		LARGE_INTEGER perf;
+		QueryPerformanceFrequency(&perf);
+		performance_frequency = (float)perf.QuadPart;
+	}
+
 	while(running)
 	{
 		//Input
 		MSG message;
+
+		for (int i = 0; i < BUTTON_COUNT; i++)
+		{
+			input.buttons[i].changed = false;
+		}
+
 		while(PeekMessage(&message, window, 0, 0, PM_REMOVE))
 		{
-			TranslateMessage(&message);
-			DispatchMessage(&message);
+			switch (message.message)
+			{
+			case WM_KEYUP:
+			case WM_KEYDOWN:
+			{
+				u32 vk_code = (u32)message.wParam;
+				bool is_down = ((message.lParam & (1 << 31)) == 0);
+
+					switch (vk_code)
+					{
+						process_button(BUTTON_UP, VK_UP);
+						process_button(BUTTON_DOWN, VK_DOWN);
+						process_button(BUTTON_LEFT, VK_LEFT);
+						process_button(BUTTON_RIGHT, VK_RIGHT);
+					}
+				} break;
+			default: {
+				TranslateMessage(&message);
+				DispatchMessage(&message);	
+				}
+			}
+			
 		}
 
 		//Simulate
-		clear_screen(0xff5500);
-		draw_rect(0, 0, 1, 1, 0xff0000);
-		draw_rect(30, 30, 5, 5, 0xff0000);
-		draw_rect(-20, 20, 8, 3, 0xff0000);
-		//render_background();
+		simulate_game(&input, delta_time);
 
 
 		//Reader
 		StretchDIBits(hdc, 0, 0, render_state.width, render_state.height, 0, 0, render_state.width, render_state.height, render_state.memory, &render_state.bitmap_info, DIB_RGB_COLORS, SRCCOPY);
 
+		LARGE_INTEGER frame_end_time;
+		QueryPerformanceCounter(&frame_end_time);
+		delta_time = (float)(frame_end_time.QuadPart - frame_begin_time.QuadPart) / performance_frequency;
+		frame_begin_time = frame_end_time;
 	}
 
 	// Cleanup code

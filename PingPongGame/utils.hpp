@@ -1,4 +1,3 @@
-#include "win32_platform.h"
 
 typedef char s8;
 typedef unsigned char u8;
