@@ -5,6 +5,7 @@ project(PingPongGame VERSION 1.0)
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Output directories
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/bin/Debug")
@@ -14,7 +15,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/bin/Release")
 file(GLOB SOURCES "PingPongGame/*.cpp" "PingPongGame/*.h")
 
 # Create the executable target
-add_executable(PingPongGame ${SOURCES} "PingPongGame/game.cpp")
+add_executable(PingPongGame ${SOURCES})
 
 # Set the subsystem to "windows" for GUI applications
 if(WIN32)
