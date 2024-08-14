@@ -23,5 +23,6 @@ void clear_screen(unsigned int color);
 
 void draw_rect_in_pixels(int x0, int y0, int x1, int y1, unsigned int color);
 void draw_rect(float x, float y, float half_size_x, float half_size_y, unsigned int color);
+void draw_number(int number, float x, float y, float size, u32 color);
 
 void simulate_game(Input* input, float dt);
