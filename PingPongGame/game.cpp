@@ -1,19 +1,10 @@
 #include "win32_platform.hpp"
 
-#define is_down(b) input->buttons[b].is_down
-#define pressed(b) (input->buttons[b].is_down && input->buttons[b].changed)
-#define released(b) (!input->buttons[b].is_down && input->buttons[b].changed)
-
 extern void draw_text(const char* text, float x, float y, float size, u32 color);
 extern void draw_arena_borders(float arena_x, float arena_y, u32 color);
+extern Input input;
+extern Gamemode current_gamemode;
 
-enum Gamemode
-{
-	GM_MENU,
-	GM_GAMEPLAY,
-};
-
-Gamemode current_gamemode;
 int hot_button;
 bool enemy_is_ai;
 
@@ -52,9 +43,10 @@ bool aabb_vs_aabb(float p1x, float p1y, float hs1x, float hs1y,
 		p1y + hs1y < p2y + hs2y);
 }
 
-void simulate_game(Input* input, float dt) {
-	draw_rect(0, 0, arena_half_size_x,arena_half_size_y, 0xffaa33);
-	draw_arena_borders(arena_half_size_x, arena_half_size_y, 0xff5500);
+void simulate_game(float const dt) {
+	draw_rect(0, 0, arena_half_size_x,arena_half_size_y, 0xd0c8c8);
+	draw_arena_borders(arena_half_size_x, arena_half_size_y, 0x433f3f);
+
 	if (current_gamemode == GM_GAMEPLAY) {
 		float player_1_ddp = 0.f;
 		if (is_down(BUTTON_UP)) player_1_ddp += 2000;
@@ -127,10 +119,17 @@ void simulate_game(Input* input, float dt) {
 		// Rendering 
 		draw_rect(ball_p_x, ball_p_y, ball_half_size, ball_half_size, 0xffffff);
 
-		draw_rect(80, player_1_p, player_half_size_x, player_half_size_y, 0xff0000);
-		draw_rect(-80, player_2_p, player_half_size_x, player_half_size_y, 0xff0000);
+		draw_rect(80, player_1_p, player_half_size_x, player_half_size_y, 0x433f3f);
+		draw_rect(-80, player_2_p, player_half_size_x, player_half_size_y, 0x433f3f);
 	} else
 	{
+		player_1_p = arena_half_size_y / 5;
+		player_2_p = arena_half_size_y / 5;
+		ball_p_x = 0;
+		ball_p_y = 0;
+		player_1_score = 0;
+		player_2_score = 0;
+
 		if (pressed(BUTTON_LEFT) || pressed(BUTTON_RIGHT))
 		{
 			hot_button = !hot_button;

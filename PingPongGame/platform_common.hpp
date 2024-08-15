@@ -11,10 +11,17 @@ enum {
 	BUTTON_LEFT,
 	BUTTON_RIGHT,
 	BUTTON_ENTER,
+	BUTTON_ESCAPE,
 
 	BUTTON_COUNT, // Should be the last item
 };
 
 struct Input {
 	Button_State buttons[BUTTON_COUNT];
+};
+
+enum Gamemode
+{
+	GM_MENU,
+	GM_GAMEPLAY,
 };

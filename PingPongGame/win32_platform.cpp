@@ -1,16 +1,17 @@
 #include "win32_platform.hpp"
 
-Render_State render_state; 
-
-bool running = true;  
+Render_State render_state;
 
 Input input = {};
+Gamemode current_gamemode;
 
 #define process_button(b, vk)\
 	case vk: {\
 		input.buttons[b].changed = is_down != input.buttons[b].is_down;\
 		input.buttons[b].is_down = is_down;\
 	} break;
+
+bool running = true;  
 
 LRESULT CALLBACK CallBack(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -57,8 +58,6 @@ LRESULT CALLBACK CallBack(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
 
-	ShowCursor(FALSE);
-
 	//Create Window Class
 	WNDCLASS window_class = {};
 	window_class.style = CS_HREDRAW | CS_VREDRAW;
@@ -70,13 +69,6 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 
 	//Create Window
 	HWND window = CreateWindow(window_class.lpszClassName, "Ping Pong Game", WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 1280, 720, 0, 0, hInstance, 0);
-	{
-		//Fullscreen
-		SetWindowLong(window, GWL_STYLE, GetWindowLong(window, GWL_STYLE) & ~WS_OVERLAPPEDWINDOW);
-		MONITORINFO mi = { sizeof(mi) };
-		GetMonitorInfo(MonitorFromWindow(window, MONITOR_DEFAULTTOPRIMARY), &mi);
-		SetWindowPos(window, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top, mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top, SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
-	}
 
 	HDC hdc = GetDC(window);
 
@@ -119,7 +111,8 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 						process_button(BUTTON_S, 'S');
 						process_button(BUTTON_RIGHT, VK_RIGHT);
 						process_button(BUTTON_LEFT, VK_LEFT);
-						process_button(BUTTON_ENTER, VK_RETURN)
+						process_button(BUTTON_ENTER, VK_RETURN);
+						process_button(BUTTON_ESCAPE, VK_ESCAPE);
 					}
 				} break;
 			default: {
@@ -130,8 +123,13 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 			
 		}
 
+		if (pressed(BUTTON_ESCAPE))
+		{
+			current_gamemode = GM_MENU;
+		}
+
 		//Simulate
-		simulate_game(&input, delta_time);
+		simulate_game(delta_time);
 
 
 		//Reader
