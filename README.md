@@ -1,4 +1,4 @@
-#Ping-Pong Game
+# Ping-Pong Game
 
 This game was created with the aim of studying video game development. 
 The project is straightforward and primarily focused on exploring rendering processes 
